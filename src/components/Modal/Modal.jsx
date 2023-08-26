@@ -1,37 +1,42 @@
-import { Component } from 'react';
+import { useEffect } from 'react';
 import './Modal.css';
 import { PropTypes } from 'prop-types';
 
-export class Modal extends Component {
-  static propTypes = {
-    onClick: PropTypes.func.isRequired,
-  };
-  componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
-  }
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-  }
-  handleKeyDown = event => {
-    // закрив по Escspe
+export const Modal = ({ onClick, icon }) => {
+  //еффект будет выполняться на каждом рендере компонента
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  });
+
+  // закрив по Escspe
+  const handleKeyDown = event => {
     if (event.code === 'Escape') {
-      this.props.onClick();
+      onClick();
     }
   };
-  handleBackDropClick = event => {
-    // закрив по бекдроп
+
+  // закрив по бекдроп
+  const handleBackDropClick = event => {
     if (event.target === event.currentTarget) {
-      this.props.onClick();
+      onClick();
     }
   };
-  render() {
-    return (
-      <div className="Overlay" onClick={this.handleBackDropClick}>
-        MODAL
-        <div className="Modal">
-          <img src={this.props.icon} alt="" />
-        </div>
+
+  return (
+    <div className="Overlay" onClick={handleBackDropClick}>
+      MODAL
+      <div className="Modal">
+        <img src={icon} alt="" />
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+Modal.propTypes = {
+  icon: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+};
