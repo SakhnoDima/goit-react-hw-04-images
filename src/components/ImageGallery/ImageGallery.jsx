@@ -9,7 +9,15 @@ export const ImageGallery = ({ pictureList, onClick }) => {
   }
   return (
     <ul className="ImageGallery">
-      <ImageGalleryItem onClick={onClick} pictureList={pictureList} />
+      {pictureList?.map(el => (
+        <ImageGalleryItem
+          key={el.id}
+          onClick={onClick}
+          pictureList={pictureList}
+          src={el.webformatURL}
+          alt={el.tags}
+        />
+      ))}
     </ul>
   );
 };

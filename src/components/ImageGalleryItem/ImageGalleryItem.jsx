@@ -1,31 +1,22 @@
 import { PropTypes } from 'prop-types';
 import './ImageGalleryItem.css';
 
-export const ImageGalleryItem = ({ pictureList, onClick }) => {
+export const ImageGalleryItem = ({ onClick, src, alt }) => {
   const handleOnclick = event => {
     return onClick(event.target.src);
   };
 
   return (
     <>
-      {pictureList?.map(el => (
-        <li
-          onClick={handleOnclick}
-          key={el.id}
-          className="ImageGalleryItem-item"
-        >
-          <img
-            src={el.webformatURL}
-            alt={el.tags}
-            className="ImageGalleryItem-image "
-          />
-        </li>
-      ))}
+      <li onClick={handleOnclick} className="ImageGalleryItem-item">
+        <img src={src} alt={alt} className="ImageGalleryItem-image " />
+      </li>
     </>
   );
 };
 
 ImageGalleryItem.propTypes = {
-  pictureList: PropTypes.array.isRequired,
+  src: PropTypes.string.isRequired,
+  alt: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
 };
