@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 
 import {
@@ -17,9 +17,9 @@ export const App = () => {
   const [pictureList, setPictureList] = useState([]);
   const [icon, setIcon] = useState('');
   const [modalShow, setModalShow] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  let totalHitse = useRef(0);
+  const [loading, setLoading] = useState(false);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     const imageLoading = async () => {
@@ -34,12 +34,14 @@ export const App = () => {
           setPictureList(null);
           return toast.error('Image not found');
         }
-        totalHitse.current = totalHits;
+        if (page === 1) {
+          setTotal(totalHits);
+        }
 
         setPictureList(prev => [...prev, ...hits]);
 
         // перевірка знайшли щось чи ні
-        if (page * 12 > totalHitse.current) toast.info('Its last page'); // перевірка лише на одну сторінку
+        if (page * 12 > total) toast.info('Its last page'); // перевірка лише на одну сторінку
       } catch (error) {
         toast.error('Sorry! We have some problem. Try again later! '); // помилка
         console.log(error.message);
@@ -57,7 +59,7 @@ export const App = () => {
     setPicture(picture);
     setPage(1);
     setPictureList([]);
-    totalHitse.current = 0;
+    setTotal(0);
   };
   const handleOnclick = () => {
     setPage(prev => prev + 1);
@@ -77,7 +79,7 @@ export const App = () => {
       <ImageGallery pictureList={pictureList} onClick={handleGetIcon} />
       <Loader visible={loading} />
       <ToastContainer autoClose={3000} />
-      {page * 12 < totalHitse.current && (
+      {page * 12 < total && (
         <button className="Button" type="button" onClick={handleOnclick}>
           Load more
         </button>
