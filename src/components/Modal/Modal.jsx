@@ -5,19 +5,18 @@ import { PropTypes } from 'prop-types';
 export const Modal = ({ onClick, icon }) => {
   //еффект будет выполняться на каждом рендере компонента
   useEffect(() => {
+    // закрив по Escspe
+    const handleKeyDown = event => {
+      if (event.code === 'Escape') {
+        onClick();
+      }
+    };
     window.addEventListener('keydown', handleKeyDown);
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  });
-
-  // закрив по Escspe
-  const handleKeyDown = event => {
-    if (event.code === 'Escape') {
-      onClick();
-    }
-  };
+  }, [onClick]);
 
   // закрив по бекдроп
   const handleBackDropClick = event => {

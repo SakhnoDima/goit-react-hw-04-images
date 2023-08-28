@@ -17,16 +17,13 @@ export const App = () => {
   const [pictureList, setPictureList] = useState([]);
   const [icon, setIcon] = useState('');
   const [modalShow, setModalShow] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  let loading = useRef(false);
   let totalHitse = useRef(0);
 
   useEffect(() => {
-    const lastPage = () => {
-      if (page * 12 > totalHitse.current) toast.error('Its last page');
-    };
     const imageLoading = async () => {
-      loading.current = true;
+      setLoading(true);
 
       try {
         const { hits, totalHits, total } = await fetchArticlesWithQuery(
@@ -38,15 +35,16 @@ export const App = () => {
           return toast.error('Image not found');
         }
         totalHitse.current = totalHits;
+
         setPictureList(prev => [...prev, ...hits]);
 
         // перевірка знайшли щось чи ні
-        lastPage(); // перевірка лише на одну сторінку
+        if (page * 12 > totalHitse.current) toast.info('Its last page'); // перевірка лише на одну сторінку
       } catch (error) {
         toast.error('Sorry! We have some problem. Try again later! '); // помилка
         console.log(error.message);
       } finally {
-        loading.current = false;
+        setLoading(false);
       }
     };
     if (!picture) {
@@ -77,7 +75,7 @@ export const App = () => {
     <div className="App">
       <Searchbar onSubmitGetPicture={handleFormGetPicture} />
       <ImageGallery pictureList={pictureList} onClick={handleGetIcon} />
-      <Loader visible={loading.current} />
+      <Loader visible={loading} />
       <ToastContainer autoClose={3000} />
       {page * 12 < totalHitse.current && (
         <button className="Button" type="button" onClick={handleOnclick}>
